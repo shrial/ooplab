@@ -1,0 +1,59 @@
+// Class representing a task
+class MyTask implements Runnable {
+    private Thread previousThread; // Reference to the previous thread
+
+    // Constructor to initialize the previous thread reference
+    public MyTask(Thread previousThread) {
+        this.previousThread = previousThread;
+    }
+
+    @Override
+    public void run() {
+        // Wait for the previous thread to finish
+        if (previousThread != null) {
+            try {
+                previousThread.join();
+                System.out.println(Thread.currentThread().getName() + " is starting after " + previousThread.getName() + " has finished.");
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " was interrupted while waiting for " + previousThread.getName() + ".");
+            }
+        }
+
+        // Task execution logic
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            try {
+                Thread.sleep(500); // Sleep for 500 milliseconds
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " was interrupted.");
+            }
+        }
+    }
+}
+
+public class JoinExample {
+    public static void main(String[] args) {
+        // Create an array to hold multiple threads
+        Thread[] threads = new Thread[5]; // Example with 5 threads
+
+        // Create and start each thread
+        for (int i = 0; i < threads.length; i++) {
+            // Pass the previous thread to the constructor, or null for the first thread
+            Thread previousThread = (i == 0) ? null : threads[i - 1];
+            threads[i] = new Thread(new MyTask(previousThread), "Thread-" + (i + 1));
+            threads[i].start();
+        }
+
+        // Wait for all threads to finish
+        for (int i = 0; i < threads.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("Main thread was interrupted while waiting for " + threads[i].getName() + ".");
+            }
+        }
+
+        // Final message after all threads have finished
+        System.out.println("All threads have finished executing.");
+    }
+}
