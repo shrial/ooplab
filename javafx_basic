@@ -1,0 +1,47 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class TextFieldUpdateExample extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        // Create a TextField for regular input
+        TextField textField = new TextField();
+        textField.setPromptText("Enter text here");
+
+        // Create a PasswordField for sensitive input
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Enter password here");
+
+        // Create a Button
+        Button button = new Button("Update TextField");
+
+        // Set the button action
+        button.setOnAction(event -> {
+            // Get the text from the PasswordField and set it to the TextField
+            String passwordText = passwordField.getText();
+            textField.setText(passwordText);
+            // Clear the PasswordField after updating
+            passwordField.clear();
+        });
+
+        // Create a layout
+        VBox vbox = new VBox(10, textField, passwordField, button);
+        vbox.setPrefSize(300, 150);
+
+        // Create a Scene and set it on the Stage
+        Scene scene = new Scene(vbox);
+        primaryStage.setTitle("TextField Update Example");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
