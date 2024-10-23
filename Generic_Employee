@@ -1,0 +1,121 @@
+// Base class Employee
+abstract class Employee {
+    String name;
+    int id;
+
+    // Constructor for Employee class
+    public Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    // Abstract method to calculate salary
+    public abstract double calculateSalary();
+
+    // Method to display employee details
+    public void displayDetails() {
+        System.out.println("ID: " + id + ", Name: " + name + ", Salary: " + calculateSalary());
+    }
+}
+
+// Subclass FullTimeEmployee
+class FullTimeEmployee extends Employee {
+    double monthlySalary;
+
+    // Constructor for FullTimeEmployee class
+    public FullTimeEmployee(String name, int id, double monthlySalary) {
+        super(name, id);
+        this.monthlySalary = monthlySalary;
+    }
+
+    // Implementation of calculateSalary for FullTimeEmployee
+    @Override
+    public double calculateSalary() {
+        return monthlySalary;
+    }
+}
+
+// Subclass PartTimeEmployee
+class PartTimeEmployee extends Employee {
+    double hourlyRate;
+    double hoursWorked;
+
+    // Constructor for PartTimeEmployee class
+    public PartTimeEmployee(String name, int id, double hourlyRate, double hoursWorked) {
+        super(name, id);
+        this.hourlyRate = hourlyRate;
+        this.hoursWorked = hoursWorked;
+    }
+
+    // Implementation of calculateSalary for PartTimeEmployee
+    @Override
+    public double calculateSalary() {
+        return hourlyRate * hoursWorked;
+    }
+}
+
+// Generic class EmployeeManager to handle arrays of Employee objects
+class EmployeeManager<T extends Employee> {
+    private T[] employees;
+    private int count;
+
+    // Constructor for EmployeeManager
+    @SuppressWarnings("unchecked")
+    public EmployeeManager(int size) {
+        employees = (T[]) new Employee[size];
+        count = 0;
+    }
+
+    // Method to add an employee
+    public void addEmployee(T employee) {
+        if (count < employees.length) {
+            employees[count++] = employee;
+        } else {
+            System.out.println("Employee array is full.");
+        }
+    }
+
+    // Method to calculate the total salary of all employees
+    public double calculateTotalSalary() {
+        double totalSalary = 0;
+        for (int i = 0; i < count; i++) {
+            totalSalary += employees[i].calculateSalary();
+        }
+        return totalSalary;
+    }
+
+    // Method to display details of all employees
+    public void displayAllEmployees() {
+        for (int i = 0; i < count; i++) {
+            employees[i].displayDetails();
+        }
+    }
+}
+
+// Main class to test the program
+public class Main {
+    public static void main(String[] args) {
+        // Create an EmployeeManager with a maximum of 5 employees
+        EmployeeManager<Employee> manager = new EmployeeManager<>(5);
+
+        // Create FullTimeEmployee and PartTimeEmployee objects
+        FullTimeEmployee emp1 = new FullTimeEmployee("Alice", 101, 5000);
+        PartTimeEmployee emp2 = new PartTimeEmployee("Bob", 102, 20, 80);
+        FullTimeEmployee emp3 = new FullTimeEmployee("Charlie", 103, 6000);
+        PartTimeEmployee emp4 = new PartTimeEmployee("David", 104, 25, 60);
+
+        // Add employees to the manager
+        manager.addEmployee(emp1);
+        manager.addEmployee(emp2);
+        manager.addEmployee(emp3);
+        manager.addEmployee(emp4);
+
+        // Display all employees
+        System.out.println("Employee Details:");
+        manager.displayAllEmployees();
+
+        // Calculate and display the total salary
+        double totalSalary = manager.calculateTotalSalary();
+        System.out.println("\nTotal Salary of All Employees: " + totalSalary);
+    }
+}
